@@ -1,0 +1,59 @@
+---
+import { site, nav } from '../data/site';
+---
+
+<footer class="border-t border-white/10 bg-slate-950 py-12">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-sm font-extrabold text-white">
+            ПР
+          </span>
+          <span class="text-lg font-bold text-white">{site.name}</span>
+        </div>
+        <p class="mt-3 max-w-sm text-sm text-slate-400">{site.slogan}. Диагностика, ТО и ремонт автомобилей.</p>
+        <a href={site.phoneHref} class="mt-4 inline-block text-sm font-semibold text-brand-400 hover:text-brand-500 transition-colors">
+          {site.phone}
+        </a>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-300">Навигация</h3>
+        <ul class="mt-4 space-y-2">
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-slate-400 hover:text-white transition-colors">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-300">Контакты</h3>
+        <ul class="mt-4 space-y-2 text-sm text-slate-400">
+          <li>{site.address}</li>
+          <li>{site.hours}</li>
+          <li>
+            <a href={`mailto:${site.email}`} class="hover:text-white transition-colors">
+              {site.email}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
+      <p class="text-xs text-slate-500">
+        © {site.year} {site.name}. Демо-версия сайта.
+      </p>
+      <p class="text-xs text-slate-500">
+        Фото: <a href="https://unsplash.com" class="underline hover:text-slate-400" target="_blank" rel="noopener">Unsplash</a>
+      </p>
+    </div>
+  </div>
+</footer>
