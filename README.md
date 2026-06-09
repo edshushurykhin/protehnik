@@ -19,29 +19,43 @@ npm run build
 
 Результат в папке `dist/`.
 
-## Деплой на Cloudflare Pages
+## Деплой на Cloudflare
 
-### Вариант A — через GitHub (рекомендуется)
+Сайт **статический** — без `@astrojs/cloudflare` и без KV-сессий.
 
-1. Создайте репозиторий на GitHub и запушьте код:
-   ```bash
-   git remote add origin https://github.com/<ваш-логин>/protehnik.git
-   git push -u origin main
-   ```
-2. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-3. Выберите репозиторий, настройки сборки:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-   - **Node.js version:** `22` (или переменная `NODE_VERSION=22`)
-4. **Save and Deploy** — получите ссылку вида `https://protehnik.pages.dev`
+### Через GitHub + Workers Builds (рекомендуется)
 
-### Вариант B — прямой деплой через Wrangler
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → ваш проект → **Settings** → **Build**
+2. Убедитесь в настройках:
+
+| Параметр | Значение |
+|----------|----------|
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Node.js version | `22` |
+
+3. **Не** используйте preset Astro с адаптером Cloudflare — он создаёт KV `protehnik-session` и ломает деплой.
+4. В репозитории уже есть `wrangler.jsonc` только со статикой (`dist/`), без Workers KV.
+
+После успешного деплоя ссылка будет вида `https://protehnik.<ваш-поддомен>.workers.dev` — она открывается с телефона и ПК.
+
+### Если ошибка KV namespace already exists [10014]
+
+1. Dashboard → **Workers & Pages** → **KV** → удалите namespace `protehnik-session` (он не нужен для статики).
+2. Пересоберите проект (**Deployments** → **Retry deployment**).
+
+### Альтернатива — Cloudflare Pages (только сборка, без deploy command)
+
+- **Build command:** `npm run build`
+- **Build output directory:** `dist`
+- **Deploy command:** оставить **пустым**
+
+### Локальный деплой
 
 ```bash
-npm run build
+npm install
 npx wrangler login
-npx wrangler pages deploy dist --project-name=protehnik
+npm run deploy
 ```
 
 ## Контент
