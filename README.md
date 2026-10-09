@@ -19,14 +19,31 @@ npm run build
 
 Результат в папке `dist/`.
 
-## Деплой на Cloudflare
+## Деплой
 
-Сайт **статический** — без `@astrojs/cloudflare` и без KV-сессий.
+Сайт **статический**. Основной публичный адрес — **протехник.рф** через **GitHub Pages** (только IPv4 в DNS), чтобы сайт открывался на проблемных Wi‑Fi, где IPv6 Cloudflare даёт `ERR_TIMED_OUT`.
 
-### Через GitHub + Workers Builds (рекомендуется)
+Запасной URL Cloudflare Workers: `https://protehnik.<поддомен>.workers.dev`.
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → ваш проект → **Settings** → **Build**
-2. Убедитесь в настройках:
+### GitHub Pages (основной домен)
+
+1. GitHub → репозиторий → **Settings** → **Pages** → Source: **GitHub Actions**.
+2. После пуша в `main` workflow **Deploy to GitHub Pages** выкладывает `dist/`.
+3. В Cloudflare → **Workers** → `protehnik` → **Domains** → **удалите** custom domain `протехник.рф` (иначе конфликт).
+4. Cloudflare → **DNS** → для apex оставьте **только** записи **A**, облако **серое (DNS only)**, **без AAAA**:
+
+| Type | Name | Content | Proxy |
+|------|------|---------|-------|
+| A | `@` | `185.199.108.153` | DNS only |
+| A | `@` | `185.199.109.153` | DNS only |
+| A | `@` | `185.199.110.153` | DNS only |
+| A | `@` | `185.199.111.153` | DNS only |
+
+5. GitHub → **Pages** → Custom domain: `протехник.рф` (или `xn--e1aggkdfhr2a.xn--p1ai`) → дождитесь TLS.
+
+Почему так: на Free-плане Cloudflare **нельзя отключить IPv6**, а сломанный IPv6 на части Wi‑Fi даёт таймаут. Без AAAA клиенты идут по IPv4.
+
+### Cloudflare Workers (запасной)
 
 | Параметр | Значение |
 |----------|----------|
@@ -34,23 +51,7 @@ npm run build
 | Deploy command | `npx wrangler deploy` |
 | Node.js version | `22` |
 
-3. **Не** используйте preset Astro с адаптером Cloudflare — он создаёт KV `protehnik-session` и ломает деплой.
-4. В репозитории уже есть `wrangler.jsonc` только со статикой (`dist/`), без Workers KV.
-
-После успешного деплоя ссылка будет вида `https://protehnik.<ваш-поддомен>.workers.dev` — она открывается с телефона и ПК.
-
-### Если ошибка KV namespace already exists [10014]
-
-1. Dashboard → **Workers & Pages** → **KV** → удалите namespace `protehnik-session` (он не нужен для статики).
-2. Пересоберите проект (**Deployments** → **Retry deployment**).
-
-### Альтернатива — Cloudflare Pages (только сборка, без deploy command)
-
-- **Build command:** `npm run build`
-- **Build output directory:** `dist`
-- **Deploy command:** оставить **пустым**
-
-### Локальный деплой
+Не используйте preset Astro с адаптером Cloudflare (KV `protehnik-session`).
 
 ```bash
 npm install
