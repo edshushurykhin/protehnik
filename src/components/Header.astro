@@ -1,18 +1,19 @@
 ---
 import { site, nav } from '../data/site';
+import MessengerButtons from './MessengerButtons.astro';
 ---
 
 <header
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-lg"
 >
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="#home" class="group flex items-center gap-2">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+    <a href="#home" class="group flex min-w-0 shrink items-center gap-2">
       <span
-        class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-sm font-extrabold text-white"
+        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-extrabold text-white"
       >
         ПР
       </span>
-      <div class="leading-tight">
+      <div class="hidden leading-tight min-[400px]:block">
         <span class="block text-base font-bold tracking-tight text-white group-hover:text-brand-400 transition-colors">
           {site.name}
         </span>
@@ -20,7 +21,7 @@ import { site, nav } from '../data/site';
       </div>
     </a>
 
-    <nav class="hidden items-center gap-6 lg:flex" aria-label="Основная навигация">
+    <nav class="hidden items-center gap-6 xl:flex" aria-label="Основная навигация">
       {
         nav.map((item) => (
           <a
@@ -33,23 +34,18 @@ import { site, nav } from '../data/site';
       }
     </nav>
 
-    <div class="flex items-center gap-2 sm:gap-3">
+    <div class="flex items-center gap-2 sm:gap-2.5">
       <a
         href={site.phoneHref}
-        class="hidden text-sm font-semibold text-white transition-colors hover:text-brand-400 md:block"
+        class="text-xs font-semibold text-white transition-colors hover:text-brand-400 sm:text-sm"
       >
         {site.phone}
       </a>
-      <a
-        href="#booking"
-        class="rounded-lg bg-brand-500 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 sm:px-4"
-      >
-        Записаться
-      </a>
+      <MessengerButtons size="sm" />
       <button
         type="button"
         id="menu-toggle"
-        class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-slate-300 lg:hidden"
+        class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-slate-300 xl:hidden"
         aria-label="Открыть меню"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -63,7 +59,7 @@ import { site, nav } from '../data/site';
 
   <nav
     id="mobile-menu"
-    class="hidden border-t border-white/10 bg-slate-950 px-4 py-4 lg:hidden"
+    class="hidden border-t border-white/10 bg-slate-950 px-4 py-4 xl:hidden"
     aria-label="Мобильная навигация"
   >
     <div class="flex flex-col gap-1">

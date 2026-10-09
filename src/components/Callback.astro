@@ -1,19 +1,21 @@
 ---
-import { site } from '../data/site';
+import { site, sectionBgs } from '../data/site';
+import SectionBg from './SectionBg.astro';
 ---
 
-<section id="callback" class="py-20 sm:py-24">
-  <div class="mx-auto max-w-6xl px-4 sm:px-6">
-    <div class="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-850">
+<section id="callback" class="relative overflow-hidden py-20 sm:py-24">
+  <SectionBg src={sectionBgs.callback} tone="heavy" />
+
+  <div class="relative mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/75 backdrop-blur-md">
       <div class="grid lg:grid-cols-2">
         <div class="p-8 sm:p-12">
           <p class="text-sm font-semibold uppercase tracking-wider text-brand-400">Обратный звонок</p>
           <h2 class="mt-2 text-3xl font-bold tracking-tight text-white">
             Перезвоним за 15 минут
           </h2>
-          <p class="mt-4 text-slate-400">
-            Оставьте номер — мастер свяжется с вами, ответит на вопросы и поможет записаться.
-            На продакшене заявки будут приходить в Telegram.
+          <p class="mt-4 text-slate-300">
+            Оставьте номер — заявка придёт на почту сервиса, и мы перезвоним.
           </p>
           <a
             href={site.phoneHref}
@@ -26,7 +28,17 @@ import { site } from '../data/site';
           </a>
         </div>
 
-        <form id="callback-form" class="border-t border-white/10 bg-slate-950/50 p-8 sm:p-12 lg:border-l lg:border-t-0">
+        <form
+          id="callback-form"
+          class="border-t border-white/10 bg-slate-950/60 p-8 sm:p-12 lg:border-l lg:border-t-0"
+          data-email={site.email}
+        >
+          <!-- FormSubmit: служебные поля -->
+          <input type="hidden" name="_subject" value={`Обратный звонок — ${site.name}`} />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
           <div class="space-y-4">
             <div>
               <label for="cb-name" class="mb-1.5 block text-sm font-medium text-slate-300">Имя</label>
@@ -36,7 +48,7 @@ import { site } from '../data/site';
                 name="name"
                 required
                 placeholder="Как к вам обращаться?"
-                class="w-full rounded-lg border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                class="w-full rounded-lg border border-white/10 bg-slate-900/80 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div>
@@ -46,8 +58,8 @@ import { site } from '../data/site';
                 id="cb-phone"
                 name="phone"
                 required
-                placeholder="+7 (999) 000-00-00"
-                class="w-full rounded-lg border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                placeholder="8 (999) 00-000-00"
+                class="w-full rounded-lg border border-white/10 bg-slate-900/80 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div>
@@ -57,24 +69,42 @@ import { site } from '../data/site';
               <input
                 type="text"
                 id="cb-time"
-                name="time"
+                name="preferred_time"
                 placeholder="Например: после 18:00"
-                class="w-full rounded-lg border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                class="w-full rounded-lg border border-white/10 bg-slate-900/80 px-4 py-3 text-white placeholder:text-slate-600 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
               />
             </div>
-            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
             <label class="flex items-start gap-2 text-sm text-slate-400">
-              <input type="checkbox" required class="mt-1 rounded border-white/20 bg-slate-900 text-brand-500 focus:ring-brand-500" />
+              <input
+                type="checkbox"
+                name="consent"
+                required
+                class="mt-1 rounded border-white/20 bg-slate-900 text-brand-500 focus:ring-brand-500"
+              />
               <span>Согласен на обработку персональных данных</span>
             </label>
             <button
               type="submit"
-              class="w-full rounded-xl bg-brand-500 py-3.5 font-semibold text-white transition-colors hover:bg-brand-600"
+              id="callback-submit"
+              class="w-full rounded-xl bg-brand-500 py-3.5 font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Жду звонка
             </button>
-            <p id="callback-success" class="hidden rounded-lg bg-green-500/10 px-4 py-3 text-center text-sm text-green-400" role="status" aria-live="polite">
-              Спасибо! Перезвоним в ближайшее время.
+            <p
+              id="callback-success"
+              class="hidden rounded-lg bg-green-500/10 px-4 py-3 text-center text-sm text-green-400"
+              role="status"
+              aria-live="polite"
+            >
+              Заявка отправлена на почту сервиса. Перезвоним в ближайшее время.
+            </p>
+            <p
+              id="callback-error"
+              class="hidden rounded-lg bg-red-500/10 px-4 py-3 text-center text-sm text-red-400"
+              role="alert"
+              aria-live="polite"
+            >
+              Не удалось отправить. Позвоните нам или напишите на {site.email}.
             </p>
           </div>
         </form>
@@ -84,19 +114,55 @@ import { site } from '../data/site';
 </section>
 
 <script>
-  document.getElementById('callback-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const honeypot = form.querySelector<HTMLInputElement>('input[name="website"]');
-    if (honeypot?.value) return;
+  const form = document.getElementById('callback-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('callback-submit') as HTMLButtonElement | null;
+  const success = document.getElementById('callback-success');
+  const error = document.getElementById('callback-error');
 
-    const success = document.getElementById('callback-success');
-    success?.classList.remove('hidden');
-    form.querySelector('button[type="submit"]')?.setAttribute('disabled', 'true');
-    setTimeout(() => {
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    success?.classList.add('hidden');
+    error?.classList.add('hidden');
+
+    const honey = form.querySelector<HTMLInputElement>('input[name="_honey"]');
+    if (honey?.value) return;
+
+    const email = form.dataset.email;
+    if (!email) return;
+
+    const data = new FormData(form);
+    const payload: Record<string, string> = {};
+    data.forEach((value, key) => {
+      if (key === 'consent') {
+        payload[key] = 'Да';
+        return;
+      }
+      payload[key] = String(value);
+    });
+
+    submitBtn?.setAttribute('disabled', 'true');
+    const original = submitBtn?.textContent;
+    if (submitBtn) submitBtn.textContent = 'Отправляем…';
+
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(email)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error('send failed');
+
+      success?.classList.remove('hidden');
       form.reset();
-      success?.classList.add('hidden');
-      form.querySelector('button[type="submit"]')?.removeAttribute('disabled');
-    }, 4000);
+    } catch {
+      error?.classList.remove('hidden');
+    } finally {
+      submitBtn?.removeAttribute('disabled');
+      if (submitBtn && original) submitBtn.textContent = original;
+    }
   });
 </script>

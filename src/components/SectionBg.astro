@@ -1,0 +1,31 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  tone?: 'default' | 'heavy';
+}
+
+const { src, alt = '', tone = 'default' } = Astro.props;
+---
+
+<div class="pointer-events-none absolute inset-0 -z-0 overflow-hidden" aria-hidden="true">
+  <img
+    src={src}
+    alt={alt}
+    class="absolute inset-0 h-full w-full object-cover object-center"
+    width="1600"
+    height="900"
+    loading="lazy"
+    decoding="async"
+  />
+  <!-- затемнение как в hero: слева плотнее, справа фото читается -->
+  <div
+    class:list={[
+      'absolute inset-0',
+      tone === 'heavy'
+        ? 'bg-gradient-to-r from-slate-950/88 via-slate-950/72 to-slate-950/55'
+        : 'bg-gradient-to-r from-slate-950/85 via-slate-950/65 to-slate-950/40',
+    ]}
+  ></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/30"></div>
+</div>

@@ -1,11 +1,23 @@
 ---
-const aboutImage =
-  'https://images.unsplash.com/photo-1625047509168-a7026f36de0c?w=1200&q=80&auto=format&fit=crop';
+import SectionBg from './SectionBg.astro';
+import { sectionBgs } from '../data/site';
+
+const aboutImages = [
+  '/photo/18416dc1-0b42-454f-a428-e81c48420e8f.jpg',
+  '/photo/29398395-513f-46f7-ac63-0c19ebb4b076.jpg',
+  '/photo/3c8e49c1-46bd-4712-979a-ab535f47bd21.jpg',
+  '/photo/52174207-865f-41c3-aa34-fd23cce4ccf4.jpg',
+  '/photo/c8f6e63a-b8eb-4545-979c-f5add5ef2f58.jpg',
+  '/photo/de1e4945-81ec-4fe3-9f43-3e55b3b5e58b.jpg',
+  '/photo/df708ae6-38ba-4010-bacc-e659098f5288.jpg',
+  '/photo/f49d1a94-e462-437d-9c40-a3019e6979e3.jpg',
+  '/photo/f4afe473-6901-41cc-9868-c750d15da9a7.jpg',
+];
 
 const features = [
   {
     title: 'Современное оборудование',
-    text: 'Компьютерная диагностика, подъёмники и специнструмент для всех марок авто.',
+    text: 'Диагностика подвески и систем, подъёмники и специнструмент для всех марок авто.',
   },
   {
     title: 'Оригинальные запчасти',
@@ -22,21 +34,54 @@ const features = [
 ];
 ---
 
-<section id="about" class="py-20 sm:py-24">
-  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+<section id="about" class="relative overflow-hidden py-20 sm:py-24">
+  <SectionBg src={sectionBgs.about} tone="heavy" />
+  <div class="relative mx-auto max-w-6xl px-4 sm:px-6">
     <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div class="relative">
-        <div class="overflow-hidden rounded-2xl border border-white/10">
-          <img
-            src={aboutImage}
-            alt="Автосервис ПРОтехник — ремонтный бокс"
-            class="aspect-[4/3] w-full object-cover"
-            width="1200"
-            height="900"
-            loading="lazy"
-          />
+        <div class="relative overflow-hidden rounded-2xl border border-white/10">
+          <div id="about-carousel" class="relative aspect-[4/3]">
+            {
+              aboutImages.map((src, i) => (
+                <img
+                  src={src}
+                  alt={`Автосервис ПРОтехник — фото ${i + 1}`}
+                  class:list={[
+                    'about-slide absolute inset-0 h-full w-full object-cover transition-opacity duration-500',
+                    i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none',
+                  ]}
+                  width="1200"
+                  height="900"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  data-index={i}
+                />
+              ))
+            }
+          </div>
+
+          <button
+            type="button"
+            id="about-prev"
+            class="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-slate-950/75 text-white shadow-lg backdrop-blur transition-colors hover:border-brand-500 hover:text-brand-400"
+            aria-label="Предыдущее фото"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            id="about-next"
+            class="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-slate-950/75 text-white shadow-lg backdrop-blur transition-colors hover:border-brand-500 hover:text-brand-400"
+            aria-label="Следующее фото"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
         </div>
-        <div class="absolute -bottom-4 -right-4 rounded-xl border border-white/10 bg-brand-500 px-5 py-4 shadow-xl sm:-bottom-6 sm:-right-6">
+
+        <div class="absolute -bottom-4 -right-4 z-10 rounded-xl border border-white/10 bg-brand-500 px-5 py-4 shadow-xl sm:-bottom-6 sm:-right-6">
           <p class="text-2xl font-bold text-white">4.9</p>
           <p class="text-xs text-brand-100">рейтинг клиентов</p>
         </div>
@@ -59,7 +104,7 @@ const features = [
         <ul class="mt-8 grid gap-4 sm:grid-cols-2">
           {
             features.map((f) => (
-              <li class="rounded-xl border border-white/10 bg-slate-900/50 p-4">
+              <li class="rounded-xl border border-white/10 bg-slate-950/70 p-4 backdrop-blur-sm">
                 <h3 class="font-semibold text-white">{f.title}</h3>
                 <p class="mt-1 text-sm text-slate-400">{f.text}</p>
               </li>
@@ -70,3 +115,22 @@ const features = [
     </div>
   </div>
 </section>
+
+<script>
+  const slides = Array.from(document.querySelectorAll<HTMLImageElement>('.about-slide'));
+  let current = 0;
+
+  const show = (index: number) => {
+    if (!slides.length) return;
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === current;
+      slide.classList.toggle('opacity-100', active);
+      slide.classList.toggle('opacity-0', !active);
+      slide.classList.toggle('pointer-events-none', !active);
+    });
+  };
+
+  document.getElementById('about-prev')?.addEventListener('click', () => show(current - 1));
+  document.getElementById('about-next')?.addEventListener('click', () => show(current + 1));
+</script>

@@ -9,7 +9,7 @@ interface Props {
 
 const {
   title = `${site.name} — ${site.slogan}`,
-  description = `Автосервис ${site.name} в Красноярске: диагностика, замена масла, тормозные колодки, ремонт подвески. Запись онлайн и обратный звонок.`,
+  description = `Автосервис ${site.name} в Красноярске: диагностика подвески и систем, замена масла и колодок, шиномонтаж, ремонт глушителей. ${site.address}. ${site.phone}`,
 } = Astro.props;
 ---
 
@@ -37,15 +37,15 @@ const {
       '@type': 'AutoRepair',
       name: site.name,
       description: site.slogan,
-      telephone: site.phone,
+      telephone: '+79994455577',
       email: site.email,
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'ул. Маерчака, 12',
+        streetAddress: site.streetAddress,
         addressLocality: 'Красноярск',
         addressCountry: 'RU',
       },
-      openingHours: 'Mo-Sa 09:00-20:00',
+      openingHours: ['Mo-Fr 09:00-19:00', 'Sa-Su 10:00-18:00'],
       priceRange: '₽₽',
     })} />
   </head>

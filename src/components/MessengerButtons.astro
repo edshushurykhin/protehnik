@@ -1,0 +1,96 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  /** Чуть крупнее иконки (hero / контакты) */
+  size?: 'sm' | 'md';
+}
+
+const { size = 'sm' } = Astro.props;
+const iconBox = size === 'md' ? 'h-11 w-11' : 'h-9 w-9';
+---
+
+<div
+  class="messenger-buttons flex items-center gap-1.5"
+  data-phone={site.phoneDigits}
+  data-max-profile={site.maxProfileUrl}
+>
+  <button
+    type="button"
+    class={`messenger-tg inline-flex ${iconBox} items-center justify-center overflow-hidden rounded-[22%] bg-[#2AABEE] shadow-sm transition-opacity hover:opacity-90`}
+    data-messenger="telegram"
+    aria-label="Написать в Telegram"
+    title="Telegram"
+  >
+    <svg class="h-[68%] w-[68%]" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#fff"
+        d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42-.34 0-.45-.16-.63-.35l.28-2.05z"
+      />
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    class={`messenger-max inline-flex ${iconBox} items-center justify-center overflow-hidden rounded-[22%] shadow-sm transition-opacity hover:opacity-90`}
+    data-messenger="max"
+    aria-label="Написать в MAX"
+    title="MAX"
+  >
+    <img
+      src="/images/icons/max.png"
+      alt=""
+      class="h-full w-full object-cover"
+      width="44"
+      height="44"
+      decoding="async"
+    />
+  </button>
+</div>
+
+<script>
+  const isMobile = () =>
+    /Android|iPhone|iPad|iPod|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+
+  const openTelegram = (phone: string) => {
+    const webUrl = `https://t.me/+${phone}`;
+    const appUrl = `tg://resolve?phone=${phone}`;
+
+    if (isMobile()) {
+      window.location.href = appUrl;
+      window.setTimeout(() => {
+        window.location.href = webUrl;
+      }, 1200);
+    } else {
+      window.open(webUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const openMax = (profileUrl: string) => {
+    if (profileUrl) {
+      window.open(profileUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (isMobile()) {
+      window.location.href = 'https://max.ru/';
+    } else {
+      window.open('https://web.max.ru/', '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  document.querySelectorAll('.messenger-buttons').forEach((group) => {
+    const phone = group.getAttribute('data-phone') || '';
+    const maxProfile = group.getAttribute('data-max-profile') || '';
+
+    group.querySelector('[data-messenger="telegram"]')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (phone) openTelegram(phone);
+    });
+
+    group.querySelector('[data-messenger="max"]')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openMax(maxProfile);
+    });
+  });
+</script>
