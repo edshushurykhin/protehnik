@@ -6,13 +6,13 @@ import { site, nav } from '../data/site';
   <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <div class="lg:col-span-2">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2.5 sm:gap-3">
           <img
             src="/logo.png"
             alt=""
-            width="40"
+            width="150"
             height="40"
-            class="h-10 w-10 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+            class="h-10 w-auto max-w-[9.5rem] shrink-0 rounded-lg object-contain ring-1 ring-brand-500/70"
             decoding="async"
           />
           <span class="text-lg font-bold text-white">{site.name}</span>

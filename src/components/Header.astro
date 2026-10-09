@@ -7,13 +7,13 @@ import MessengerButtons from './MessengerButtons.astro';
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-lg"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-    <a href="#home" class="group flex min-w-0 shrink items-center gap-2.5">
+    <a href="#home" class="group flex min-w-0 shrink items-center gap-2.5 sm:gap-3">
       <img
         src="/logo.png"
         alt={site.name}
-        width="40"
+        width="150"
         height="40"
-        class="h-10 w-10 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+        class="h-9 w-auto max-w-[7.5rem] shrink-0 rounded-lg object-contain ring-1 ring-brand-500/70 sm:h-10 sm:max-w-[9.5rem]"
         decoding="async"
       />
       <div class="hidden leading-tight min-[400px]:block">

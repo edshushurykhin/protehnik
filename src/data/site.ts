@@ -1,6 +1,6 @@
 export const site = {
   name: 'ПРОтехник',
-  slogan: 'Сервис в Красноярске',
+  slogan: 'Автосервис в Красноярске',
   phone: '8 (999) 44-555-77',
   phoneHref: 'tel:+79994455577',
   /** Цифры номера без + для Telegram deep link */
